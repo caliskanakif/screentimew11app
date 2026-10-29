@@ -4,4 +4,4 @@ Persönlicher, lokaler Bildschirmzeit-Tracker für Windows 11 (WPF, .NET 8): sch
 
 Dokumentation, Build-Anleitung, Abhängigkeiten und Bedingungen: siehe [Project.md](Project.md).
 
-Hinweis: Der Quellcode ist noch nicht in diesem Repository.
+Der Quellcode liegt im Repo (Stand v3, mit optionalem Ordner-Sync für Google Drive). Bauen: `BUILD (small, recommended).bat`.

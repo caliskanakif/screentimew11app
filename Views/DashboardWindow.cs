@@ -917,10 +917,38 @@ public sealed class DashboardWindow : Window
             Field("\"Focused\" from (% of active time)", Tb(s.FocusHighPercent.ToString(), 60, v => { if (int.TryParse(v, out var n) && n is >= 0 and <= 100) { s.FocusHighPercent = n; QueueSave(); } })),
             Field("\"Balanced\" from (%) - below that: \"Leisure / distracted\"", Tb(s.FocusLowPercent.ToString(), 60, v => { if (int.TryParse(v, out var n) && n is >= 0 and <= 100) { s.FocusLowPercent = n; QueueSave(); } })))));
 
+        // cloud sync
+        var syncStatus = Lbl(_t.Sync.Status, 12, dim: true);
+        syncStatus.Margin = new Thickness(0, 8, 0, 0);
+        syncStatus.TextWrapping = TextWrapping.Wrap;
+        var syncTb = Tb(s.SyncFolder ?? "", 520, v => { });
+        void ApplySync()
+        {
+            var path = syncTb.Text.Trim();
+            bool changed = path != (s.SyncFolder ?? "");
+            s.SyncFolder = path;
+            _t.SaveSettings();
+            if (changed || path.Length > 0) _t.Sync.QueueAll();
+            _t.Sync.FlushIfDue(force: true);
+            syncStatus.Text = _t.Sync.Status;
+        }
+        sp.Children.Add(Card(CardTitle("Cloud sync (Google Drive)",
+            Hint("Choose a folder INSIDE your \"Google Drive for desktop\" folder (e.g. G:\\My Drive\\ScreenTime). The tracker writes one small file per day there; Google Drive uploads it. The tracker itself never connects to the internet. Leave empty to keep everything local."),
+            Field("Sync folder", syncTb),
+            Field("Device name", Tb(s.DeviceName ?? "", 260, v => { s.DeviceName = v; QueueSave(); })),
+            Row(Btn("Browse...", () =>
+                {
+                    var dlg = new Microsoft.Win32.OpenFolderDialog { Title = "Choose the sync folder (inside Google Drive)" };
+                    if (dlg.ShowDialog() == true) { syncTb.Text = dlg.FolderName; ApplySync(); }
+                }),
+                Btn("Apply & sync now", ApplySync, accent: true),
+                Btn("Turn off", () => { syncTb.Text = ""; ApplySync(); })),
+            syncStatus)));
+
         var info = Lbl($"{_t.Days.Count(kv => kv.Value.ActiveSeconds > 0)} days with data · folder: {Storage.Dir}", 12, dim: true);
         info.Margin = new Thickness(0, 10, 0, 0);
         sp.Children.Add(Card(CardTitle("Your data",
-            Hint("Everything stays on this PC - one small file per day, kept forever. No accounts, no cloud, no telemetry."),
+            Hint("Stored locally - one small file per day, kept forever. Cloud sync is optional (see above) and off by default. No telemetry."),
             Row(Btn("Open data folder", () =>
                 {
                     try { Process.Start(new ProcessStartInfo("explorer.exe", "\"" + Storage.Dir + "\"")); } catch { }

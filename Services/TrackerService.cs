@@ -18,6 +18,8 @@ public sealed class TrackerService : IDisposable
     public AppSettings Settings { get; }
     public Dictionary<string, DayRecord> Days { get; }
 
+    public SyncExportService Sync { get; }
+
     public bool Paused { get; set; }
     public bool IsIdle { get; private set; }
     public string CurrentApp { get; private set; } = "";
@@ -35,6 +37,7 @@ public sealed class TrackerService : IDisposable
         Settings = Storage.Load<AppSettings>("settings.json") ?? new AppSettings();
         Settings.Thresholds ??= new();
         Days = Storage.LoadDays();
+        Sync = new SyncExportService(this);
         _timer.Tick += (_, _) => Tick();
     }
 
@@ -95,7 +98,7 @@ public sealed class TrackerService : IDisposable
         }
 
         Updated?.Invoke();
-        if (++_saveCounter >= 10) { _saveCounter = 0; Save(); }
+        if (++_saveCounter >= 10) { _saveCounter = 0; Save(); Sync.FlushIfDue(); }
     }
 
     public void ResetToday()
@@ -113,7 +116,7 @@ public sealed class TrackerService : IDisposable
     {
         Storage.Save("settings.json", Settings);
         foreach (var key in _dirty.ToList())
-            if (Days.TryGetValue(key, out var rec)) Storage.SaveDay(key, rec);
+            if (Days.TryGetValue(key, out var rec)) { Storage.SaveDay(key, rec); Sync.Queue(key); }
         _dirty.Clear();
     }
 
@@ -121,5 +124,6 @@ public sealed class TrackerService : IDisposable
     {
         _timer.Stop();
         Save();
+        Sync.FlushIfDue(force: true);
     }
 }

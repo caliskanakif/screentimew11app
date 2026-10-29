@@ -452,7 +452,7 @@ Hinweis: Werte nur bearbeiten, wenn die App **beendet** ist, sonst überschreibt
 - **Backup:** Ordner `%AppData%\ScreenTimeTracker` kopieren. Zurückspielen = Ordner an dieselbe Stelle legen (App vorher beenden).
 - **Auf anderen PC:** Ordner kopieren, dort dieselbe EXE starten.
 - **CSV:** *General → Export history (CSV)* legt `ScreenTime-export-<Datum>.csv` auf den Desktop (Spalten: Datum, aktive Sekunden, `hh:mm:ss`, Leerlauf-Sekunden, meistgenutzte App; UTF-8 mit BOM für Excel).
-- **Kein Cloud-Sync.** Wer mehrere Rechner will, muss den Ordner selbst abgleichen.
+- **Cloud-Sync (ab v3, optional):** *General → Cloud sync* einen Ordner in „Google Drive für Desktop“ wählen (z. B. `G:\My Drive\Screen Time`). Pro Tag wird `<deviceId>\yyyy-MM-dd.json` geschrieben (Schema v1, wie im Dashboard). Die App selbst geht nie ins Internet. **„Apply & sync now“** lädt die ganze Historie hoch.
 
 ---
 

@@ -1,4 +1,4 @@
-SCREEN TIME TRACKER  (WPF, .NET 8, Windows 11, fully offline)
+SCREEN TIME TRACKER  (WPF, .NET 8, Windows 11, offline; optional folder sync for Google Drive)
 
 BUILD
   1. Unzip this folder anywhere (e.g. Desktop).
@@ -27,3 +27,7 @@ DATA (all local, %AppData%\ScreenTimeTracker)
   An old usage.json from an earlier version is converted automatically.
   Today's total is saved every 10 s, on sleep, logoff, shutdown and exit, so after a restart it
   continues until the daily reset time. Time while the PC sleeps or is off is never counted.
+
+CLOUD SYNC (optional, v3)
+  Settings > General > Cloud sync: choose a folder inside Google Drive for desktop. One file per day is written
+  there (see docs/SCHEMA.md). The tracker itself never connects to the internet. Off by default.

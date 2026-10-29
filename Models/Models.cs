@@ -46,6 +46,11 @@ public sealed class AppSettings
     public double OverlayLeft { get; set; } = 100;
     public double OverlayTop { get; set; } = 100;
 
+    // ---- Cloud sync (folder inside "Google Drive for desktop"; empty = off) ----
+    public string SyncFolder { get; set; } = "";
+    public string DeviceId { get; set; } = "";
+    public string DeviceName { get; set; } = "";
+
     // ---- Dashboard state ----
     public string StatsRange { get; set; } = "Week";       // Day | Week | Month | Year | All
     public string StatsChart { get; set; } = "Bar";        // Bar | Line | Pie
